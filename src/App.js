@@ -8,6 +8,16 @@ import NotFound from "./pages/NotFound";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+let client = {
+  address1: "!",
+  address2: "!2",
+  city: "memphrica",
+  state: "texas",
+  zipcode: "77477",
+};
+
+let quotes = {};
+
 function App() {
   return (
     <Router>
@@ -16,9 +26,15 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/client:id" element={<ClientProfile />} />
-          <Route path="/client:id/newquote" element={<FuelQuoteForm />} />
-          <Route path="/client:id/history" element={<FuelQuoteHistory />} />
+          <Route path="/client" element={<ClientProfile />} />
+          <Route
+            path="/client/newquote"
+            element={<FuelQuoteForm clientProfile={client} />}
+          />
+          <Route
+            path="/client/quotehistory"
+            element={<FuelQuoteHistory quotes={quotes} />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
