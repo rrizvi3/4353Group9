@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Register = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -19,8 +20,8 @@ const Register = () => {
     // You may also want to add validation and error handling.
 
     // For demonstration purposes, we'll log the registration data for now.
-    console.log('Username:', username);
-    console.log('Password:', password);
+    console.log("Username:", username);
+    console.log("Password:", password);
 
     // After successful registration, you can redirect the user to the login page or another page.
   };
@@ -49,7 +50,9 @@ const Register = () => {
             required
           />
         </div>
-        <button type="submit">Register</button>
+        <button type="submit">
+          <Link to="/login">Register</Link>
+        </button>
       </form>
     </div>
   );

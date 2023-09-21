@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -19,8 +20,8 @@ const Login = () => {
     // and perform authentication (e.g., send a request to an API).
 
     // For demonstration purposes, we'll simply log the credentials for now.
-    console.log('Username:', username);
-    console.log('Password:', password);
+    console.log("Username:", username);
+    console.log("Password:", password);
 
     // You can redirect the user to a dashboard or another page upon successful login.
   };
@@ -52,6 +53,9 @@ const Login = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <button>
+          <Link to="/register">Register</Link>
+        </button>
       </form>
     </div>
   );
