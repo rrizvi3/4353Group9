@@ -27,7 +27,56 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className="d-grid gap-3 mx-auto col-3 mt-5 align-items-start">
+      <h2>Login</h2>
+      <form onSubmit={handleSubmit}>
+        <div class="row g-3 align-items-center">
+          <div class="col-auto">
+            <label for="inputPassword6" className="col-form-label">
+              Username
+            </label>
+          </div>
+          <div class="col-auto">
+            <input
+              type="password"
+              id="inputPassword6"
+              className="form-control"
+              aria-describedby="passwordHelpInline"
+            />
+          </div>
+        </div>
+        <div class="row g-3 align-items-center">
+          <div class="col-auto">
+            <label for="inputPassword6" className="col-form-label">
+              Password
+            </label>
+          </div>
+          <div class="col-auto">
+            <input
+              type="password"
+              id="inputPassword6"
+              className="form-control"
+              aria-describedby="passwordHelpInline"
+            />
+          </div>
+          <div class="col-auto">
+            <span id="passwordHelpInline" class="form-text">
+              Must be 8-20 characters long.
+            </span>
+          </div>
+        </div>
+        <Link to="/client" className="btn btn-primary btn-sm fs-5">
+          Login
+        </Link>
+      </form>
+    </div>
+  );
+};
+
+export default Login;
+
+/*
+<div className="login-container">
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -53,12 +102,6 @@ const Login = () => {
           />
         </div>
         <button type="submit">Login</button>
-        <button>
-          <Link to="/register">Register</Link>
-        </button>
       </form>
     </div>
-  );
-};
-
-export default Login;
+  */

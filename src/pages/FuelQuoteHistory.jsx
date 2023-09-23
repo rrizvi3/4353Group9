@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 function FuelQuoteHistory({ quotes }) {
   return (
-    <div>
+    <div class="mt-4">
       <h2>Fuel Quote History</h2>
-      <table>
+      <table class="table mt-4">
         <thead>
           <tr>
             <th>Gallons Requested</th>
@@ -16,19 +17,21 @@ function FuelQuoteHistory({ quotes }) {
         </thead>
         <tbody>
           <tr>
-            <td>{"quote.gallonsRequested"}</td>
+            <td>{"3"}</td>
             <td>
-              {"quote.clientProfile.address1"}, {"quote.clientProfile.address2"}
+              {"asd"}, {"asd"}
               <br />
-              {"quote.clientProfile.city"}, {"quote.clientProfile.state"}{" "}
-              {"quote.clientProfile.zipcode"}
+              {"ads"}, {"asd"} {"sad"}
             </td>
-            <td>{"quote.deliveryDate"}</td>
-            <td>{"quote.suggestedPrice"}</td>
-            <td>{"quote.totalAmountDue"}</td>
+            <td>{"asd"}</td>
+            <td>{"adssa"}</td>
+            <td>{"ads"}</td>
           </tr>
         </tbody>
       </table>
+      <Link to="/client" className="btn btn-primary ms-2">
+        Back
+      </Link>
     </div>
   );
 }

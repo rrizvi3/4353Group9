@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 function FuelQuoteForm({ clientProfile }) {
   const [gallonsRequested, setGallonsRequested] = useState("");
@@ -101,7 +102,12 @@ function FuelQuoteForm({ clientProfile }) {
           <label>Total Amount Due (numeric non-editable):</label>
           <p>{totalAmountDue}</p>
         </div>
-        <button type="submit">Submit</button>
+        <Link to="/client" className="btn btn-primary ms-2">
+          save
+        </Link>
+        <Link to="/client/quotehistory" className="btn btn-primary ms-2">
+          View History
+        </Link>
       </form>
     </div>
   );
