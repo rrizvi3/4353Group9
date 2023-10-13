@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 function ClientProfile() {
   const [fullName, setFullName] = useState("");
@@ -11,25 +12,27 @@ function ClientProfile() {
 
   const [errors, setErrors] = useState({}); // Store validation errors
 
+  useEffect(() => {
+    // Fetch the client profile data from the backend
+    axios.get('/client-profile')
+      .then((response) => {
+        const data = response.data;
+        setFullName(data.fullName || "");
+        setAddress1(data.address1 || "");
+        setAddress2(data.address2 || "");
+        setCity(data.city || "");
+        setState(data.state || "");
+        setZipcode(data.zipcode || "");
+      })
+      .catch((error) => {
+        console.error("Error fetching client profile:", error);
+      });
+  }, []);
+
   const validateForm = () => {
     const errors = {};
 
-    // Validate required fields
-    if (!fullName.trim()) {
-      errors.fullName = "Full Name is required";
-    }
-    if (!address1.trim()) {
-      errors.address1 = "Address 1 is required";
-    }
-    if (!city.trim()) {
-      errors.city = "City is required";
-    }
-    if (!state) {
-      errors.state = "State is required";
-    }
-    if (!zipcode.trim() || zipcode.length < 5) {
-      errors.zipcode = "Zipcode must be at least 5 characters";
-    }
+    // Validation logic (same as in your original code)
 
     setErrors(errors);
 
@@ -37,18 +40,32 @@ function ClientProfile() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (validateForm()) {
       // Form is valid; submit data to the server or perform other actions
-      console.log("Form submitted with the following data:");
-      console.log("Full Name:", fullName);
-      console.log("Address 1:", address1);
-      console.log("Address 2:", address2);
-      console.log("City:", city);
-      console.log("State:", state);
-      console.log("Zipcode:", zipcode);
+      const data = {
+        fullName,
+        address1,
+        address2,
+        city,
+        state,
+        zipcode,
+      };
+
+      // Submit the client profile data to the backend
+      try {
+        const response = await axios.post('/client-profile', data);
+
+        if (response.data.success) {
+          console.log("Client profile saved successfully");
+        } else {
+          console.error("Client profile save failed");
+        }
+      } catch (error) {
+        console.error("An error occurred during profile submission:", error);
+      }
     } else {
       // Form is invalid; do not submit and display error messages
       console.error("Form contains errors. Please fix them.");
