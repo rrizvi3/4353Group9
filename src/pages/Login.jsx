@@ -1,9 +1,27 @@
+<<<<<<< Updated upstream
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+=======
+<<<<<<< HEAD
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import axios from 'axios'; // You may need to install this library
+
+>>>>>>> Stashed changes
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+<<<<<<< Updated upstream
+=======
+=======
+import React, { useState } from 'react';
+
+const Login = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+>>>>>>> 809049ca97769fab0c8a5c0a77b1c29a19146993
+>>>>>>> Stashed changes
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -13,17 +31,53 @@ const Login = () => {
     setPassword(e.target.value);
   };
 
+<<<<<<< Updated upstream
   const handleSubmit = (e) => {
     e.preventDefault();
 
+=======
+<<<<<<< HEAD
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+
+
+=======
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+>>>>>>> 809049ca97769fab0c8a5c0a77b1c29a19146993
+>>>>>>> Stashed changes
     // Here, you can add code to validate the username and password,
     // and perform authentication (e.g., send a request to an API).
 
     // For demonstration purposes, we'll simply log the credentials for now.
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+>>>>>>> Stashed changes
     console.log("Username:", username);
     console.log("Password:", password);
 
     // You can redirect the user to a dashboard or another page upon successful login.
+<<<<<<< Updated upstream
+=======
+    try {
+      const response = await axios.post('/login', { username, password });
+
+      if (response.data.success) {
+        // Successful login, you can redirect the user here
+        console.log("Login successful");
+      } else {
+        // Failed login
+        console.log("Login failed");
+      }
+    } catch (error) {
+      // Handle errors
+      console.error("An error occurred during login.");
+    }
+  
+>>>>>>> Stashed changes
   };
 
   return (
@@ -77,6 +131,19 @@ export default Login;
 
 /*
 <div className="login-container">
+<<<<<<< Updated upstream
+=======
+=======
+    console.log('Username:', username);
+    console.log('Password:', password);
+
+    // You can redirect the user to a dashboard or another page upon successful login.
+  };
+
+  return (
+    <div className="login-container">
+>>>>>>> 809049ca97769fab0c8a5c0a77b1c29a19146993
+>>>>>>> Stashed changes
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -104,4 +171,15 @@ export default Login;
         <button type="submit">Login</button>
       </form>
     </div>
+<<<<<<< Updated upstream
   */
+=======
+<<<<<<< HEAD
+  */
+=======
+  );
+};
+
+export default Login;
+>>>>>>> 809049ca97769fab0c8a5c0a77b1c29a19146993
+>>>>>>> Stashed changes

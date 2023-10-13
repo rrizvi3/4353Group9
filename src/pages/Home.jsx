@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 import { Link } from "react-router-dom";
 export default function Home() {
   return (
@@ -20,4 +21,8 @@ export default function Home() {
       </div>
     </>
   );
+=======
+export default function Home() {
+  return <div>Home</div>;
+>>>>>>> Stashed changes
 }
