@@ -1,40 +1,79 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
+
+const mockClientProfileData = {
+  fullName: "John Doe",
+  address1: "123 Main St",
+  address2: "Apt 4B",
+  city: "Albany",
+  state: "NY",
+  zipcode: "10001",
+};
 
 function ClientProfile() {
-  const [fullName, setFullName] = useState("");
-  const [address1, setAddress1] = useState("");
-  const [address2, setAddress2] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [zipcode, setZipcode] = useState("");
+  const [fullName, setFullName] = useState(
+    mockClientProfileData.fullName || ""
+  );
+  const [address1, setAddress1] = useState(
+    mockClientProfileData.address1 || ""
+  );
+  const [address2, setAddress2] = useState(
+    mockClientProfileData.address2 || ""
+  );
+  const [city, setCity] = useState(mockClientProfileData.city || "");
+  const [state, setState] = useState(mockClientProfileData.state || "");
+  const [zipcode, setZipcode] = useState(mockClientProfileData.zipcode || "");
 
   const [errors, setErrors] = useState({}); // Store validation errors
 
   useEffect(() => {
-    // Fetch the client profile data from the backend
-    axios.get('/client-profile')
-      .then((response) => {
-        const data = response.data;
-        setFullName(data.fullName || "");
-        setAddress1(data.address1 || "");
-        setAddress2(data.address2 || "");
-        setCity(data.city || "");
-        setState(data.state || "");
-        setZipcode(data.zipcode || "");
-      })
-      .catch((error) => {
-        console.error("Error fetching client profile:", error);
-      });
+    // Mock data from the server (replace this with actual API call)
+    const mockClientData = {
+      fullName: "John Doe",
+      address1: "123 Main St",
+      address2: "Apt 4B",
+      city: "Sample City",
+      state: "NY",
+      zipcode: "10001",
+    };
+
+    setFullName(mockClientData.fullName || "");
+    setAddress1(mockClientData.address1 || "");
+    setAddress2(mockClientData.address2 || "");
+    setCity(mockClientData.city || "");
+    setState(mockClientData.state || "");
+    setZipcode(mockClientData.zipcode || "");
   }, []);
 
   const validateForm = () => {
-    const errors = {};
+    let errors = {}; // Object to store validation errors
 
-    // Validation logic (same as in your original code)
+    if (!fullName) {
+      errors.fullName = "Full Name is required";
+    }
 
-    setErrors(errors);
+    if (!address1) {
+      errors.address1 = "Address 1 is required";
+    }
+
+    if (!city) {
+      errors.city = "City is required";
+    }
+
+    if (!state) {
+      errors.state = "State is required";
+    }
+
+    if (!zipcode) {
+      errors.zipcode = "Zipcode is required";
+    } else if (!/^\d{5}(-\d{4})?$/.test(zipcode)) {
+      errors.zipcode = "Invalid Zipcode format";
+    }
+
+    // You can add more validation checks here, such as email validation, etc.
+
+    setErrors(errors); // Store validation errors
 
     // Return true if there are no errors, indicating a valid form
     return Object.keys(errors).length === 0;
@@ -56,7 +95,7 @@ function ClientProfile() {
 
       // Submit the client profile data to the backend
       try {
-        const response = await axios.post('/client-profile', data);
+        const response = await axios.post("/client-profile", data);
 
         if (response.data.success) {
           console.log("Client profile saved successfully");
@@ -83,27 +122,11 @@ function ClientProfile() {
           type="text"
           class="form-control"
           id="validationCustom01"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
           required
         />
         <div class="valid-feedback">Looks good!</div>
-      </div>
-      <div class="col-md-4">
-        <label for="validationCustomUsername" class="form-label">
-          Username
-        </label>
-        <div class="input-group has-validation">
-          <span class="input-group-text" id="inputGroupPrepend">
-            @
-          </span>
-          <input
-            type="text"
-            class="form-control"
-            id="validationCustomUsername"
-            aria-describedby="inputGroupPrepend"
-            required
-          />
-          <div class="invalid-feedback">Please choose a username.</div>
-        </div>
       </div>
       <div class="col-md-6">
         <label for="validationCustom03" class="form-label">
@@ -113,6 +136,8 @@ function ClientProfile() {
           type="text"
           class="form-control"
           id="validationCustom03"
+          value={address1}
+          onChange={(e) => setAddress1(e.target.value)}
           required
         />
         <div class="invalid-feedback">Please provide a valid city.</div>
@@ -125,7 +150,8 @@ function ClientProfile() {
           type="text"
           class="form-control"
           id="validationCustom03"
-          required
+          value={address2}
+          onChange={(e) => setAddress2(e.target.value)}
         />
         <div class="invalid-feedback">Please provide a valid city.</div>
       </div>
@@ -137,6 +163,8 @@ function ClientProfile() {
           type="text"
           class="form-control"
           id="validationCustom03"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
           required
         />
         <div class="invalid-feedback">Please provide a valid city.</div>
@@ -145,7 +173,13 @@ function ClientProfile() {
         <label for="validationCustom04" class="form-label">
           State
         </label>
-        <select class="form-select" id="validationCustom04" required>
+        <select
+          class="form-select"
+          id="validationCustom04"
+          value={state}
+          onChange={(e) => setState(e.target.value)}
+          required
+        >
           <option selected disabled value="">
             Choose...
           </option>
@@ -210,13 +244,15 @@ function ClientProfile() {
           type="text"
           class="form-control"
           id="validationCustom05"
+          value={zipcode}
+          onChange={(e) => setZipcode(e.target.value)}
           required
         />
         <div class="invalid-feedback">Please provide a valid zip.</div>
       </div>
       <div class="col-12 mt-3">
         <button class="btn btn-primary" type="submit">
-          save
+          Save
         </button>
         <Link to="/client/newquote" className="btn btn-primary ms-2">
           New Quote

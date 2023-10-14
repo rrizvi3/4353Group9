@@ -8,12 +8,13 @@ import NotFound from "./pages/NotFound";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-let client = {
-  address1: "!",
-  address2: "!2",
-  city: "memphrica",
-  state: "texas",
-  zipcode: "77477",
+const client = {
+  fullName: "John Doe",
+  address1: "123 Main St",
+  address2: "Apt 4B",
+  city: "Albany",
+  state: "NY",
+  zipcode: "10001",
 };
 
 let quotes = {};

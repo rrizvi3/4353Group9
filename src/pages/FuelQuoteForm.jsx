@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 function FuelQuoteForm({ clientProfile }) {
   const [gallonsRequested, setGallonsRequested] = useState("");
@@ -19,7 +19,8 @@ function FuelQuoteForm({ clientProfile }) {
 
   useEffect(() => {
     // Fetch the fuel quote data from the backend
-    axios.get('/fuel-quote')
+    axios
+      .get("/fuel-quote")
       .then((response) => {
         const data = response.data;
         setGallonsRequested(data.gallonsRequested || "");
@@ -50,7 +51,8 @@ function FuelQuoteForm({ clientProfile }) {
     const numericRegex = /^[0-9]*$/;
 
     if (!gallonsRequested.trim() || !numericRegex.test(gallonsRequested)) {
-      errors.gallonsRequested = "Gallons Requested is required and must be a number";
+      errors.gallonsRequested =
+        "Gallons Requested is required and must be a number";
     }
 
     if (!deliveryDate) {
@@ -62,7 +64,7 @@ function FuelQuoteForm({ clientProfile }) {
     if (Object.keys(errors).length === 0) {
       // Validation passed, calculate and set the suggested price and total amount due
       calculateTotalAmountDue();
-      setSuggestedPrice("2.50"); // Example suggested price
+      setSuggestedPrice("2.50");
 
       // Submit the fuel quote data to the backend
       const data = {
@@ -73,7 +75,7 @@ function FuelQuoteForm({ clientProfile }) {
       };
 
       try {
-        const response = await axios.post('/fuel-quote', data);
+        const response = await axios.post("/fuel-quote", data);
 
         if (response.data.success) {
           console.log("Fuel quote saved successfully");
