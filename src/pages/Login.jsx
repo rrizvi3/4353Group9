@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from 'axios'; // You may need to install this library
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -18,98 +20,74 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/login', { username, password });
+      const response = await axios.post("http://localhost:5000/login", {
+        username,
+        password,
+      });
 
       if (response.data.success) {
         // Successful login, you can redirect the user here
         console.log("Login successful");
+        navigate("/client");
       } else {
         // Failed login
-        console.log("Login failed");
+        setError("Login failed. Please check your credentials.");
       }
     } catch (error) {
       // Handle errors
-      console.error("An error occurred during login.");
+      console.error("An error occurred during login" + error);
+      setError("An error occurred during login. Please try again later.");
     }
   };
-
 
   return (
     <div className="d-grid gap-3 mx-auto col-3 mt-5 align-items-start">
       <h2>Login</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div class="row g-3 align-items-center">
-          <div class="col-auto">
-            <label for="inputPassword6" className="col-form-label">
+        <div className="row g-3 align-items-center">
+          <div className="col-auto">
+            <label htmlFor="username" className="col-form-label">
               Username
             </label>
           </div>
-          <div class="col-auto">
+          <div className="col-auto">
             <input
-              type="password"
-              id="inputPassword6"
+              type="text" // Change the input type to text
+              id="username" // Added unique id
               className="form-control"
-              aria-describedby="passwordHelpInline"
+              value={username} // Bind value to state
+              onChange={handleUsernameChange} // Handle input changes
             />
           </div>
         </div>
-        <div class="row g-3 align-items-center">
-          <div class="col-auto">
-            <label for="inputPassword6" className="col-form-label">
+        <div className="row g-3 align-items-center">
+          <div className="col-auto">
+            <label htmlFor="password" className="col-form-label">
               Password
             </label>
           </div>
-          <div class="col-auto">
+          <div className="col-auto">
             <input
               type="password"
-              id="inputPassword6"
+              id="password"
               className="form-control"
-              aria-describedby="passwordHelpInline"
+              value={password}
+              onChange={handlePasswordChange}
             />
           </div>
-          <div class="col-auto">
-            <span id="passwordHelpInline" class="form-text">
+          <div className="col-auto">
+            <span id="passwordHelpInline" className="form-text">
               Must be 8-20 characters long.
             </span>
           </div>
         </div>
-        <Link to="/client" className="btn btn-primary btn-sm fs-5">
+        <button type="submit" className="btn btn-primary btn-sm fs-5">
           Login
-        </Link>
+        </button>
       </form>
     </div>
   );
 };
 
 export default Login;
-
-/*
-<div className="login-container">
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            value={username}
-            onChange={handleUsernameChange}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={password}
-            onChange={handlePasswordChange}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  */

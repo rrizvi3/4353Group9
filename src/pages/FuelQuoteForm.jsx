@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-function FuelQuoteForm({ clientProfile }) {
+function FuelQuoteForm({ client }) {
   const [gallonsRequested, setGallonsRequested] = useState("");
   const [deliveryDate, setDeliveryDate] = useState("");
   const [suggestedPrice, setSuggestedPrice] = useState("");
@@ -20,7 +20,7 @@ function FuelQuoteForm({ clientProfile }) {
   useEffect(() => {
     // Fetch the fuel quote data from the backend
     axios
-      .get("/fuel-quote")
+      .get("http://localhost:5000/fuel-quote")
       .then((response) => {
         const data = response.data;
         setGallonsRequested(data.gallonsRequested || "");
@@ -112,10 +112,10 @@ function FuelQuoteForm({ clientProfile }) {
         </div>
         <div>
           <label>Delivery Address (Non-editable):</label>
-          <p>{clientProfile.address1}</p>
-          <p>{clientProfile.address2}</p>
+          <p>{client.address1}</p>
+          <p>{client.address2}</p>
           <p>
-            {clientProfile.city}, {clientProfile.state} {clientProfile.zipcode}
+            {client.city}, {client.state} {client.zipcode}
           </p>
         </div>
         <div>

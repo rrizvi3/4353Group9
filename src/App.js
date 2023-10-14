@@ -5,8 +5,10 @@ import ClientProfile from "./pages/ClientProfile";
 import FuelQuoteForm from "./pages/FuelQuoteForm";
 import FuelQuoteHistory from "./pages/FuelQuoteHistory";
 import NotFound from "./pages/NotFound";
-
+import axios from "axios";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+const quotes = axios.get("http://localhost:5000/fuel-quote-history");
 
 const client = {
   fullName: "John Doe",
@@ -16,8 +18,6 @@ const client = {
   state: "NY",
   zipcode: "10001",
 };
-
-let quotes = {};
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
           <Route path="/client" element={<ClientProfile />} />
           <Route
             path="/client/newquote"
-            element={<FuelQuoteForm clientProfile={client} />}
+            element={<FuelQuoteForm client={client} />}
           />
           <Route
             path="/client/quotehistory"

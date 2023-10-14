@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 
 function FuelQuoteHistory() {
   const [quotes, setQuotes] = useState([]);
 
   useEffect(() => {
     // Fetch the fuel quote history data from the backend
-    axios.get('/fuel-quote-history')
+    axios
+      .get("http://localhost:5000/fuel-quote-history")
       .then((response) => {
         setQuotes(response.data);
       })
@@ -32,15 +33,15 @@ function FuelQuoteHistory() {
         <tbody>
           {quotes.map((quote, index) => (
             <tr key={index}>
-              <td>{quote.gallonsRequested}</td>
+              <td>{quote.fuelQuoteData.gallonsRequested}</td>
               <td>
-                {quote.clientProfile.address1}, {quote.clientProfile.address2}
+                {quote.client.address1}, {quote.client.address2}
                 <br />
-                {quote.clientProfile.city}, {quote.clientProfile.state} {quote.clientProfile.zipcode}
+                {quote.client.city}, {quote.client.state} {quote.client.zipcode}
               </td>
-              <td>{quote.deliveryDate}</td>
-              <td>{quote.suggestedPrice}</td>
-              <td>{quote.totalAmountDue}</td>
+              <td>{quote.fuelQuoteData.deliveryDate}</td>
+              <td>{quote.fuelQuoteData.suggestedPrice}</td>
+              <td>{quote.fuelQuoteData.totalAmountDue}</td>
             </tr>
           ))}
         </tbody>

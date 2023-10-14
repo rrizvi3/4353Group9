@@ -1,14 +1,98 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
-const port = 3001; // Choose your desired port
+const port = 5000;
 
-// Middleware to parse JSON requests
-app.use(bodyParser.json());
+app.use(cors());
 
-//routes for handling the fuel quote data:
-// Sample hardcoded fuel quote data (in practice, you'd connect to a database)
-let fuelQuoteData = {};
+app.use(express.json());
+
+// User data
+const users = [{ username: "user1", password: "password1" }];
+
+// Client Data
+const client = {
+  fullName: "John Doe",
+  address1: "123 Main St",
+  address2: "Apt 4B",
+  city: "Albany",
+  state: "NY",
+  zipcode: "10001",
+};
+
+// Fuel Quote Data
+const fuelQuoteData = {
+  gallonsRequested: "100",
+  deliveryDate: "2023-10-15", // Set a date in the future
+  suggestedPrice: "2.50",
+  totalAmountDue: "250.00",
+};
+
+// Assuming you have a 'quotes' array with sample data
+const quotes = [
+  {
+    fuelQuoteData,
+    client,
+  },
+];
+
+// Create a route to fetch fuel quote history
+app.get("/fuel-quote-history", (req, res) => {
+  res.json(quotes);
+});
+
+// Route for handling login
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  // Find the user by username
+  const user = users.find((user) => user.username === username);
+
+  if (user) {
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = password === user.password;
+
+    if (isPasswordValid) {
+      // Successful login
+      res.json({ success: true, message: "Login successful" });
+      console.log("Login successful");
+    } else {
+      // Failed login
+      res.status(401).json({ success: false, message: "Login failed" });
+      console.log("Login failed feme");
+    }
+  } else {
+    // User not found
+    res.status(401).json({ success: false, message: "Login failed" });
+    console.log("Login failed user not found");
+  }
+});
+
+// Create a route to fetch client profile data
+app.get("/client-profile", (req, res) => {
+  res.json(client);
+});
+
+// Validation middleware
+const validateProfile = (req, res, next) => {
+  // Validate required fields
+  if (!req.body.fullName) {
+    return res.status(400).json({ error: "Full name is required" });
+  }
+
+  // Validate field types
+  if (typeof req.body.zipcode !== "string") {
+    return res.status(400).json({ error: "Zipcode must be a string" });
+  }
+
+  // Validate field lengths
+  if (req.body.fullName.length > 50) {
+    return res.status(400).json({ error: "Full name cannot exceed 50 chars" });
+  }
+
+  // Pass validation
+  next();
+};
 
 // Create a route to fetch fuel quote data
 app.get("/fuel-quote", (req, res) => {
@@ -35,68 +119,8 @@ app.post("/fuel-quote", (req, res) => {
   res.json({ success: true, message: "Fuel quote data updated successfully" });
 });
 
-// Sample hardcoded user data (in practice, you'd connect to a database)
-const users = [{ username: "user1", password: "password1" }];
-
-// Assuming you have a 'quotes' array with sample data
-const quotes = [
-  {
-    gallonsRequested: 3,
-    clientProfile: {
-      address1: "123 Main St",
-      address2: "Apt 4B",
-      city: "Sample City",
-      state: "NY",
-      zipcode: "10001",
-    },
-    deliveryDate: "2023-10-13",
-    suggestedPrice: 2.5,
-    totalAmountDue: 7.5,
-  },
-  // Add more sample quotes here
-];
-
-// Create a route to fetch fuel quote history
-app.get("/fuel-quote-history", (req, res) => {
-  res.json(quotes);
-});
-
-// Route for handling login
-app.post("/login", (req, res) => {
-  const { username, password } = req.body;
-
-  // Check if the provided credentials match any user
-  const user = users.find(
-    (user) => user.username === username && user.password === password
-  );
-
-  if (user) {
-    // Successful login
-    res.json({ success: true, message: "Login successful" });
-  } else {
-    // Failed login
-    res.status(401).json({ success: false, message: "Login failed" });
-  }
-});
-
-//route for handling client profile data
-// Sample hardcoded client profile data (in practice, you'd connect to a database)
-const mockClientData = {
-  fullName: "John Doe",
-  address1: "123 Main St",
-  address2: "Apt 4B",
-  city: "Albany",
-  state: "NY",
-  zipcode: "10001",
-};
-
-// Create a route to fetch client profile data
-app.get("/client-profile", (req, res) => {
-  res.json(mockClientData);
-});
-
 // Create a route to update client profile data
-app.post("/client-profile", (req, res) => {
+app.post("/client-profile", validateProfile, (req, res) => {
   const data = req.body;
 
   // Assuming you want to store the client profile data

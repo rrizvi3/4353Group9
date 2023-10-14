@@ -2,52 +2,38 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const mockClientProfileData = {
-  fullName: "John Doe",
-  address1: "123 Main St",
-  address2: "Apt 4B",
-  city: "Albany",
-  state: "NY",
-  zipcode: "10001",
-};
-
 function ClientProfile() {
-  const [fullName, setFullName] = useState(
-    mockClientProfileData.fullName || ""
-  );
-  const [address1, setAddress1] = useState(
-    mockClientProfileData.address1 || ""
-  );
-  const [address2, setAddress2] = useState(
-    mockClientProfileData.address2 || ""
-  );
-  const [city, setCity] = useState(mockClientProfileData.city || "");
-  const [state, setState] = useState(mockClientProfileData.state || "");
-  const [zipcode, setZipcode] = useState(mockClientProfileData.zipcode || "");
-
-  const [errors, setErrors] = useState({}); // Store validation errors
+  const [fullName, setFullName] = useState("");
+  const [address1, setAddress1] = useState("");
+  const [address2, setAddress2] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    // Mock data from the server (replace this with actual API call)
-    const mockClientData = {
-      fullName: "John Doe",
-      address1: "123 Main St",
-      address2: "Apt 4B",
-      city: "Sample City",
-      state: "NY",
-      zipcode: "10001",
-    };
-
-    setFullName(mockClientData.fullName || "");
-    setAddress1(mockClientData.address1 || "");
-    setAddress2(mockClientData.address2 || "");
-    setCity(mockClientData.city || "");
-    setState(mockClientData.state || "");
-    setZipcode(mockClientData.zipcode || "");
+    // Fetch client profile data from the server
+    axios
+      .get("http://localhost:5000/client-profile")
+      .then((response) => {
+        const clientData = response.data;
+        setFullName(clientData.fullName || "");
+        setAddress1(clientData.address1 || "");
+        setAddress2(clientData.address2 || "");
+        setCity(clientData.city || "");
+        setState(clientData.state || "");
+        setZipcode(clientData.zipcode || "");
+      })
+      .catch((error) => {
+        console.error(
+          "An error occurred while fetching client profile data:",
+          error
+        );
+      });
   }, []);
 
   const validateForm = () => {
-    let errors = {}; // Object to store validation errors
+    let errors = {};
 
     if (!fullName) {
       errors.fullName = "Full Name is required";
@@ -112,7 +98,12 @@ function ClientProfile() {
   };
 
   return (
-    <form class="row g-3 needs-validation" novalidate className="mt-4">
+    <form
+      class="row g-3 needs-validation"
+      novalidate
+      className="mt-4"
+      onSubmit={handleSubmit}
+    >
       <h1>Client Profile Management</h1>
       <div class="col-md-4">
         <label for="validationCustom01" class="form-label">
@@ -263,87 +254,3 @@ function ClientProfile() {
 }
 
 export default ClientProfile;
-
-/*
-<div className="mx-auto">
-      <h1>Client Profile Management</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="fullName">Full Name (required):</label>
-          <input
-            type="text"
-            id="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            required
-            maxLength={50}
-          />
-          {errors.fullName && <p className="error">{errors.fullName}</p>}
-        </div>
-        <div>
-          <label htmlFor="address1">Address 1 (required):</label>
-          <input
-            type="text"
-            id="address1"
-            value={address1}
-            onChange={(e) => setAddress1(e.target.value)}
-            required
-            maxLength={100}
-          />
-          {errors.address1 && <p className="error">{errors.address1}</p>}
-        </div>
-        <div>
-          <label htmlFor="address2">Address 2 (optional):</label>
-          <input
-            type="text"
-            id="address2"
-            value={address2}
-            onChange={(e) => setAddress2(e.target.value)}
-            maxLength={100}
-          />
-        </div>
-        <div>
-          <label htmlFor="city">City (required):</label>
-          <input
-            type="text"
-            id="city"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            required
-            maxLength={100}
-          />
-          {errors.city && <p className="error">{errors.city}</p>}
-        </div>
-        <div>
-          <label htmlFor="state">State (required):</label>
-          <select
-            id="state"
-            value={state}
-            onChange={(e) => setState(e.target.value)}
-            required
-          >
-            <option value="">Select State</option>
-            <option value="NY">New York</option>
-            <option value="CA">California</option>
-            </select>
-            {errors.state && <p className="error">{errors.state}</p>}
-          </div>
-          <div>
-            <label htmlFor="zipcode">
-              Zipcode (at least 5 characters required):
-            </label>
-            <input
-              type="text"
-              id="zipcode"
-              value={zipcode}
-              onChange={(e) => setZipcode(e.target.value)}
-              required
-              minLength={5}
-              maxLength={9}
-            />
-            {errors.zipcode && <p className="error">{errors.zipcode}</p>}
-          </div>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
-  */
