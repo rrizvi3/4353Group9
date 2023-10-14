@@ -1,6 +1,6 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const app = require("../server"); // Import your Express app
+const app = require("../server");
 const expect = chai.expect;
 
 chai.use(chaiHttp);
