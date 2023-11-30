@@ -27,7 +27,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/client" element={<ClientProfile />} />
+          <Route path="/:clientid" element={<ClientProfile />} />
           <Route
             path="/client/newquote"
             element={<FuelQuoteForm client={client} />}

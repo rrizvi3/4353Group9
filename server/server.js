@@ -1,19 +1,29 @@
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql");
+const { Pool } = require("pg");
 const app = express();
 const port = 5000;
+const bcrypt = require("bcrypt");
 
 app.use(cors());
-
 app.use(express.json());
 
-const db = mysql.createConnection({
+const db = new Pool({
+  user: "postgres",
   host: "localhost",
-  user: "root",
-  password: "masterpo21",
-  database: "FuelRateDB",
+  database: "fuelrate",
+  password: "masterpo",
+  port: 5432,
 });
+
+// Connect to DB
+db.connect()
+  .then(() => {
+    console.log("Connected to PostgreSQL database");
+  })
+  .catch((err) => {
+    console.error("Error connecting to PostgreSQL database: " + err);
+  });
 
 // User data
 const users = [{ username: "user1", password: "password1" }];
@@ -52,27 +62,41 @@ app.get("/fuel-quote-history", (req, res) => {
 // Route for handling login
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
+  try {
+    // Fetch user from the database based on the provided username
+    const result = await db.query("SELECT * FROM Users WHERE username = $1", [
+      username,
+    ]);
+    const user = result.rows[0];
 
-  // Find the user by username
-  const user = users.find((user) => user.username === username);
+    if (user) {
+      // Compare the provided password with the hashed password in the database
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.password_hash
+      );
 
-  if (user) {
-    // Compare the provided password with the hashed password in the database
-    const isPasswordValid = password === user.password;
-
-    if (isPasswordValid) {
-      // Successful login
-      res.json({ success: true, message: "Login successful" });
-      console.log("Login successful");
+      if (isPasswordValid) {
+        // Successful login
+        res.json({ success: true, message: "Login successful" });
+        console.log("Login successful");
+      } else {
+        // Failed login
+        res.json({
+          success: false,
+          message: "Invalid Password",
+        });
+        console.log("Login failed: Invalid password");
+      }
     } else {
-      // Failed login
-      res.status(401).json({ success: false, message: "Login failed" });
-      console.log("Login failed feme");
+      // User not found
+      res.json({ success: false, message: "Invalid Username and/or Password" });
+      console.log("Login failed: User not found");
     }
-  } else {
-    // User not found
-    res.status(401).json({ success: false, message: "Login failed" });
-    console.log("Login failed user not found");
+  } catch (error) {
+    // Handle database query error
+    console.error("An error occurred during login: " + error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
 

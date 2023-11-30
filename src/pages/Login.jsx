@@ -28,10 +28,14 @@ const Login = () => {
       if (response.data.success) {
         // Successful login, you can redirect the user here
         console.log("Login successful");
-        navigate("/client");
+        navigate("/:clientid");
       } else {
         // Failed login
-        setError("Login failed. Please check your credentials.");
+        if (response.data.message === "Invalid Password") {
+          setError("Invalid Password");
+        } else {
+          setError("Login failed. Please check your credentials.");
+        }
       }
     } catch (error) {
       // Handle errors
