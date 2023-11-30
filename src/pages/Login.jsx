@@ -55,7 +55,7 @@ const Login = () => {
               Username
             </label>
           </div>
-          <div className="col-auto">
+          <div className="col-auto mt-1">
             <input
               type="text" // Change the input type to text
               id="username" // Added unique id
@@ -71,7 +71,7 @@ const Login = () => {
               Password
             </label>
           </div>
-          <div className="col-auto">
+          <div className="col-auto mt-1">
             <input
               type="password"
               id="password"
@@ -80,13 +80,8 @@ const Login = () => {
               onChange={handlePasswordChange}
             />
           </div>
-          <div className="col-auto">
-            <span id="passwordHelpInline" className="form-text">
-              Must be 8-20 characters long.
-            </span>
-          </div>
         </div>
-        <button type="submit" className="btn btn-primary btn-sm fs-5">
+        <button type="submit" className="btn btn-primary btn-sm fs-5 mt-3">
           Login
         </button>
       </form>

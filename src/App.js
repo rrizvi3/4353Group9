@@ -29,11 +29,11 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/:clientid" element={<ClientProfile />} />
           <Route
-            path="/client/newquote"
+            path="/:clientid/newquote"
             element={<FuelQuoteForm client={client} />}
           />
           <Route
-            path="/client/quotehistory"
+            path="/:clientid/quotehistory"
             element={<FuelQuoteHistory quotes={quotes} />}
           />
           <Route path="*" element={<NotFound />} />

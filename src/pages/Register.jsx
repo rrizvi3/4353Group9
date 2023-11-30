@@ -1,9 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -13,56 +16,77 @@ const Register = () => {
     setPassword(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Username:", username);
-    console.log("Password:", password);
+    try {
+      // Send registration data to the server
+      const response = await axios.post("http://localhost:5000/register", {
+        username,
+        password,
+      });
+
+      if (response.data.success) {
+        // Successful registration, you can redirect the user or show a success message
+        console.log("Registration successful");
+        navigate("/login"); // Redirect to the login page
+      } else {
+        // Failed registration
+        setError("Registration failed. Please try a different username.");
+      }
+    } catch (error) {
+      // Handle errors
+      console.error("An error occurred during registration" + error);
+      setError(
+        "An error occurred during registration. Please try again later."
+      );
+    }
   };
 
   return (
     <div className="d-grid gap-3 mx-auto col-3 mt-5 align-items-start">
       <h2>Registration</h2>
+      {error && <div className="alert alert-danger">{error}</div>}
       <form onSubmit={handleSubmit}>
-        <div class="row g-3 align-items-center">
-          <div class="col-auto">
-            <label for="inputPassword6" className="col-form-label">
+        <div className="row g-3 align-items-center">
+          <div className="col-auto">
+            <label htmlFor="username" className="col-form-label">
               Username
             </label>
           </div>
-          <div class="col-auto">
+          <div className="col-auto mt-1">
             <input
-              type="password"
-              id="inputPassword6"
+              type="text"
+              id="username"
               className="form-control"
-              aria-describedby="passwordHelpInline"
+              value={username}
+              onChange={handleUsernameChange}
             />
           </div>
         </div>
-        <div class="row g-3 align-items-center">
-          <div class="col-auto">
-            <label for="inputPassword6" className="col-form-label">
+        <div className="row g-3 align-items-center">
+          <div className="col-auto">
+            <label htmlFor="password" className="col-form-label">
               Password
             </label>
           </div>
-          <div class="col-auto">
+          <div className="col-auto mt-1">
             <input
               type="password"
-              id="inputPassword6"
+              id="password"
               className="form-control"
-              aria-describedby="passwordHelpInline"
+              value={password}
+              onChange={handlePasswordChange}
             />
           </div>
-          <div class="col-auto">
-            <span id="passwordHelpInline" class="form-text">
-              Must be 8-20 characters long.
-            </span>
-          </div>
         </div>
-        <Link to="/login" className="btn btn-primary btn-sm fs-5">
+        <button type="submit" className="btn btn-primary btn-sm fs-5 mt-3">
           Register
-        </Link>
+        </button>
       </form>
+      <div className="mt-1">
+        Already have an account? <Link to="/login">Login</Link>
+      </div>
     </div>
   );
 };

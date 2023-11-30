@@ -25,9 +25,6 @@ db.connect()
     console.error("Error connecting to PostgreSQL database: " + err);
   });
 
-// User data
-const users = [{ username: "user1", password: "password1" }];
-
 // Client Data
 const client = {
   fullName: "John Doe",
@@ -96,6 +93,45 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     // Handle database query error
     console.error("An error occurred during login: " + error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+// Route for handling user registration
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    // Check if the username is already taken
+    const existingUser = await db.query(
+      "SELECT * FROM Users WHERE username = $1",
+      [username]
+    );
+
+    if (existingUser.rows.length > 0) {
+      // Username is already taken
+      res.json({ success: false, message: "Username is already taken" });
+      console.log("Registration failed: Username is already taken");
+    } else {
+      // Generate a salt with the bcrypt algorithm and the "bf" option
+      //const salt = await bcrypt.genSalt(10, "bf");
+
+      // Hash the password with the generated salt
+      const hashedPassword = await bcrypt.hash(password, 6);
+
+      // Insert the new user into the database
+      await db.query(
+        "INSERT INTO Users (username, password_hash) VALUES ($1, $2)",
+        [username, hashedPassword]
+      );
+
+      // Successful registration
+      res.json({ success: true, message: "Registration successful" });
+      console.log("Registration successful");
+    }
+  } catch (error) {
+    // Handle database query error
+    console.error("An error occurred during registration: " + error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 });
