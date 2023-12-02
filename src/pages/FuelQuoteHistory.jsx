@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 function FuelQuoteHistory() {
+  const { clientid } = useParams();
   const [quotes, setQuotes] = useState([]);
 
   useEffect(() => {
     // Fetch the fuel quote history data from the backend
     axios
-      .get("http://localhost:5000/fuel-quote-history")
+      .get(`http://localhost:5000/${clientid}/fuel-quote-history`)
       .then((response) => {
         setQuotes(response.data);
       })

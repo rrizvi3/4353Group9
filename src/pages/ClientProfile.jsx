@@ -1,28 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 function ClientProfile() {
+  const { clientid } = useParams();
   const [fullName, setFullName] = useState("");
   const [address1, setAddress1] = useState("");
   const [address2, setAddress2] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipcode, setZipcode] = useState("");
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState();
+  const [success, setSuccess] = useState();
 
   useEffect(() => {
     // Fetch client profile data from the server
     axios
-      .get("http://localhost:5000/client-profile")
+      .get(`http://localhost:5000/${clientid}`)
       .then((response) => {
         const clientData = response.data;
-        setFullName(clientData.fullName || "");
+        setFullName(clientData.full_name || "");
         setAddress1(clientData.address1 || "");
         setAddress2(clientData.address2 || "");
         setCity(clientData.city || "");
         setState(clientData.state || "");
-        setZipcode(clientData.zipcode || "");
+        setZipcode(clientData.zip_code || "");
       })
       .catch((error) => {
         console.error(
@@ -30,7 +32,7 @@ function ClientProfile() {
           error
         );
       });
-  }, []);
+  }, [clientid]);
 
   const validateForm = () => {
     let errors = {};
@@ -57,10 +59,6 @@ function ClientProfile() {
       errors.zipcode = "Invalid Zipcode format";
     }
 
-    // You can add more validation checks here, such as email validation, etc.
-
-    setErrors(errors); // Store validation errors
-
     // Return true if there are no errors, indicating a valid form
     return Object.keys(errors).length === 0;
   };
@@ -81,171 +79,183 @@ function ClientProfile() {
 
       // Submit the client profile data to the backend
       try {
-        const response = await axios.post("/client-profile", data);
-
+        const response = await axios.post(
+          `http://localhost:5000/${clientid}`,
+          data
+        );
         if (response.data.success) {
           console.log("Client profile saved successfully");
+          setError();
+          setSuccess(response.data.message);
         } else {
-          console.error("Client profile save failed");
+          console.error("Client profile save failed:", response.data.message);
+          setError(response.data.message);
         }
       } catch (error) {
         console.error("An error occurred during profile submission:", error);
+        setError("Check Console");
       }
     } else {
       // Form is invalid; do not submit and display error messages
       console.error("Form contains errors. Please fix them.");
+      setError("Form contains errors. Please fix them.");
     }
   };
 
   return (
     <form
-      class="row g-3 needs-validation"
-      novalidate
-      className="mt-4"
+      className="row g-3 needs-validation"
+      noValidate
       onSubmit={handleSubmit}
     >
       <h1>Client Profile Management</h1>
-      <div class="col-md-4">
-        <label for="validationCustom01" class="form-label">
+      {error || success ? (
+        <div className={`alert ${error ? "alert-danger" : "alert-success"}`}>
+          {error && <p>{error}</p>}
+          {success && <p>{success}</p>}
+        </div>
+      ) : null}
+      <div className="col-md-4">
+        <label htmlFor="validationCustom01" className="form-label">
           Full Name
         </label>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           id="validationCustom01"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
         />
-        <div class="valid-feedback">Looks good!</div>
+        <div className="valid-feedback">Looks good!</div>
       </div>
-      <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">
+      <div className="col-md-6">
+        <label htmlFor="validationCustom03" className="form-label">
           Address 1
         </label>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           id="validationCustom03"
           value={address1}
           onChange={(e) => setAddress1(e.target.value)}
           required
         />
-        <div class="invalid-feedback">Please provide a valid city.</div>
+        <div className="invalid-feedback">Please provide a valid city.</div>
       </div>
-      <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">
+      <div className="col-md-6">
+        <label htmlFor="validationCustom03" className="form-label">
           Address 2
         </label>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           id="validationCustom03"
           value={address2}
           onChange={(e) => setAddress2(e.target.value)}
         />
-        <div class="invalid-feedback">Please provide a valid city.</div>
+        <div className="invalid-feedback">Please provide a valid city.</div>
       </div>
-      <div class="col-md-6">
-        <label for="validationCustom03" class="form-label">
+      <div className="col-md-6">
+        <label htmlFor="validationCustom03" className="form-label">
           City
         </label>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           id="validationCustom03"
           value={city}
           onChange={(e) => setCity(e.target.value)}
           required
         />
-        <div class="invalid-feedback">Please provide a valid city.</div>
+        <div className="invalid-feedback">Please provide a valid city.</div>
       </div>
-      <div class="col-md-3">
-        <label for="validationCustom04" class="form-label">
+      <div className="col-md-3">
+        <label htmlFor="validationCustom04" className="form-label">
           State
         </label>
         <select
-          class="form-select"
+          className="form-select"
           id="validationCustom04"
           value={state}
           onChange={(e) => setState(e.target.value)}
           required
         >
-          <option selected disabled value="">
+          <option disabled value="">
             Choose...
           </option>
-          <option value="Alabama">Alabama</option>
-          <option value="Alaska">Alaska</option>
-          <option value="Arizona">Arizona</option>
-          <option value="Arkansas">Arkansas</option>
-          <option value="California">California</option>
-          <option value="Colorado">Colorado</option>
-          <option value="Connecticut">Connecticut</option>
-          <option value="Delaware">Delaware</option>
-          <option value="Florida">Florida</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Hawaii">Hawaii</option>
-          <option value="Idaho">Idaho</option>
-          <option value="Illinois">Illinois</option>
-          <option value="Indiana">Indiana</option>
-          <option value="Iowa">Iowa</option>
-          <option value="Kansas">Kansas</option>
-          <option value="Kentucky">Kentucky</option>
-          <option value="Louisiana">Louisiana</option>
-          <option value="Maine">Maine</option>
-          <option value="Maryland">Maryland</option>
-          <option value="Massachusetts">Massachusetts</option>
-          <option value="Michigan">Michigan</option>
-          <option value="Minnesota">Minnesota</option>
-          <option value="Mississippi">Mississippi</option>
-          <option value="Missouri">Missouri</option>
-          <option value="Montana">Montana</option>
-          <option value="Nebraska">Nebraska</option>
-          <option value="Nevada">Nevada</option>
-          <option value="New Hampshire">New Hampshire</option>
-          <option value="New Jersey">New Jersey</option>
-          <option value="New Mexico">New Mexico</option>
-          <option value="New York">New York</option>
-          <option value="North Carolina">North Carolina</option>
-          <option value="North Dakota">North Dakota</option>
-          <option value="Ohio">Ohio</option>
-          <option value="Oklahoma">Oklahoma</option>
-          <option value="Oregon">Oregon</option>
-          <option value="Pennsylvania">Pennsylvania</option>
-          <option value="Rhode Island">Rhode Island</option>
-          <option value="South Carolina">South Carolina</option>
-          <option value="South Dakota">South Dakota</option>
-          <option value="Tennessee">Tennessee</option>
-          <option value="Texas">Texas</option>
-          <option value="Utah">Utah</option>
-          <option value="Vermont">Vermont</option>
-          <option value="Virginia">Virginia</option>
-          <option value="Washington">Washington</option>
-          <option value="West Virginia">West Virginia</option>
-          <option value="Wisconsin">Wisconsin</option>
-          <option value="Wyoming">Wyoming</option>
+          <option value="AL">Alabama</option>
+          <option value="AK">Alaska</option>
+          <option value="AZ">Arizona</option>
+          <option value="AR">Arkansas</option>
+          <option value="CA">California</option>
+          <option value="CO">Colorado</option>
+          <option value="CT">Connecticut</option>
+          <option value="DE">Delaware</option>
+          <option value="FL">Florida</option>
+          <option value="GA">Georgia</option>
+          <option value="HI">Hawaii</option>
+          <option value="ID">Idaho</option>
+          <option value="IL">Illinois</option>
+          <option value="IN">Indiana</option>
+          <option value="IA">Iowa</option>
+          <option value="KS">Kansas</option>
+          <option value="KY">Kentucky</option>
+          <option value="LA">Louisiana</option>
+          <option value="ME">Maine</option>
+          <option value="MD">Maryland</option>
+          <option value="MA">Massachusetts</option>
+          <option value="MI">Michigan</option>
+          <option value="MN">Minnesota</option>
+          <option value="MS">Mississippi</option>
+          <option value="MO">Missouri</option>
+          <option value="MT">Montana</option>
+          <option value="NE">Nebraska</option>
+          <option value="NV">Nevada</option>
+          <option value="NH">New Hampshire</option>
+          <option value="NJ">New Jersey</option>
+          <option value="NM">New Mexico</option>
+          <option value="NY">New York</option>
+          <option value="NC">North Carolina</option>
+          <option value="ND">North Dakota</option>
+          <option value="OH">Ohio</option>
+          <option value="OK">Oklahoma</option>
+          <option value="OR">Oregon</option>
+          <option value="PA">Pennsylvania</option>
+          <option value="RI">Rhode Island</option>
+          <option value="SC">South Carolina</option>
+          <option value="SD">South Dakota</option>
+          <option value="TN">Tennessee</option>
+          <option value="TX">Texas</option>
+          <option value="UT">Utah</option>
+          <option value="VT">Vermont</option>
+          <option value="VA">Virginia</option>
+          <option value="WA">Washington</option>
+          <option value="WV">West Virginia</option>
+          <option value="WI">Wisconsin</option>
+          <option value="WY">Wyoming</option>
         </select>
-        <div class="invalid-feedback">Please select a valid state.</div>
+        <div className="invalid-feedback">Please select a valid state.</div>
       </div>
-      <div class="col-md-3">
-        <label for="validationCustom05" class="form-label">
+      <div className="col-md-3">
+        <label htmlFor="validationCustom05" className="form-label">
           Zip
         </label>
         <input
           type="text"
-          class="form-control"
+          className="form-control"
           id="validationCustom05"
           value={zipcode}
           onChange={(e) => setZipcode(e.target.value)}
           required
         />
-        <div class="invalid-feedback">Please provide a valid zip.</div>
+        <div className="invalid-feedback">Please provide a valid zip.</div>
       </div>
-      <div class="col-12 mt-3">
-        <button class="btn btn-primary" type="submit">
+      <div className="col-12 mt-3">
+        <button className="btn btn-primary" type="submit">
           Save
         </button>
-        <Link to="/client/newquote" className="btn btn-primary ms-2">
+        <Link to={`/${clientid}/newquote`} className="btn btn-primary ms-2">
           New Quote
         </Link>
       </div>
