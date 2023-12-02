@@ -1,3 +1,6 @@
+import React from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -5,19 +8,6 @@ import ClientProfile from "./pages/ClientProfile";
 import FuelQuoteForm from "./pages/FuelQuoteForm";
 import FuelQuoteHistory from "./pages/FuelQuoteHistory";
 import NotFound from "./pages/NotFound";
-import axios from "axios";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
-const quotes = axios.get("http://localhost:5000/fuel-quote-history");
-
-const client = {
-  fullName: "John Doe",
-  address1: "123 Main St",
-  address2: "Apt 4B",
-  city: "Albany",
-  state: "NY",
-  zipcode: "10001",
-};
 
 function App() {
   return (
@@ -28,13 +18,10 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/:clientid" element={<ClientProfile />} />
-          <Route
-            path="/:clientid/newquote"
-            element={<FuelQuoteForm client={client} />}
-          />
+          <Route path="/:clientid/newquote" element={<FuelQuoteForm />} />
           <Route
             path="/:clientid/quotehistory"
-            element={<FuelQuoteHistory quotes={quotes} />}
+            element={<FuelQuoteHistory />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>

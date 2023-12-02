@@ -28,7 +28,7 @@ const Login = () => {
       if (response.data.success) {
         // Successful login, you can redirect the user here
         console.log("Login successful");
-        navigate("/:clientid");
+        navigate(`/${response.data.clientid}`);
       } else {
         // Failed login
         if (response.data.message === "Invalid Password") {
