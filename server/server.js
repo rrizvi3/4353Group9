@@ -306,8 +306,57 @@ app.post("/:clientid/fuel-quote", (req, res) => {
 });
 
 // Route to fetch fuel quote history
-app.get("/:clientid/fuel-quote-history", (req, res) => {
-  res.json({ message: "No Quotes Avaliable at this time" });
+app.get("/:clientid/fuel-quote-history", async (req, res) => {
+  const clientId = req.params.clientid;
+
+  try {
+    // Fetch client information
+    const clientResult = await db.query(
+      "SELECT * FROM Clients WHERE user_id = $1",
+      [clientId]
+    );
+
+    if (clientResult.rows.length === 0) {
+      res.json({ success: false, message: "Client not found" });
+      return;
+    }
+
+    // Fetch fuel quote history data based on clientId
+    const fuelQuotesResult = await db.query(
+      "SELECT * FROM FuelQuotes WHERE user_id = $1",
+      [clientId]
+    );
+
+    if (fuelQuotesResult.rows.length > 0) {
+      const fuelQuotes = fuelQuotesResult.rows.map((quote) => ({
+        fuelQuoteData: {
+          gallonsRequested: quote.gallons_requested,
+          deliveryDate: quote.delivery_date,
+          suggestedPrice: quote.suggested_price,
+          totalAmountDue: quote.total_amount_due,
+        },
+        address1: clientResult.rows[0].address1,
+        address2: clientResult.rows[0].address2,
+        city: clientResult.rows[0].city,
+        state: clientResult.rows[0].state,
+        zipcode: clientResult.rows[0].zip_code,
+      }));
+
+      // Send the fuel quotes data to the client
+      res.json({ success: true, fuelQuotes });
+    } else {
+      res.json({
+        success: false,
+        message: "No fuel quotes available for this client",
+      });
+    }
+  } catch (error) {
+    console.error(
+      "An error occurred while fetching fuel quote history:",
+      error
+    );
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
 });
 
 // Start the server

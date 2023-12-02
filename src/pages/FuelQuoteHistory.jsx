@@ -11,13 +11,13 @@ function FuelQuoteHistory() {
     axios
       .get(`http://localhost:5000/${clientid}/fuel-quote-history`)
       .then((response) => {
-        setQuotes(response.data);
+        setQuotes(response.data.fuelQuotes);
       })
       .catch((error) => {
         console.error("Error fetching fuel quote history:", error);
       });
   }, []);
-
+  console.log(quotes);
   return (
     <div className="mt-4">
       <h2>Fuel Quote History</h2>
@@ -36,9 +36,9 @@ function FuelQuoteHistory() {
             <tr key={index}>
               <td>{quote.fuelQuoteData.gallonsRequested}</td>
               <td>
-                {quote.client.address1}, {quote.client.address2}
+                {quote.address1}, {quote.address2}
                 <br />
-                {quote.client.city}, {quote.client.state} {quote.client.zipcode}
+                {quote.city}, {quote.state} {quote.zipcode}
               </td>
               <td>{quote.fuelQuoteData.deliveryDate}</td>
               <td>{quote.fuelQuoteData.suggestedPrice}</td>
@@ -47,7 +47,7 @@ function FuelQuoteHistory() {
           ))}
         </tbody>
       </table>
-      <Link to="/client" className="btn btn-primary ms-2">
+      <Link to={`/${clientid}`} className="btn btn-primary ms-2">
         Back
       </Link>
     </div>
@@ -55,22 +55,3 @@ function FuelQuoteHistory() {
 }
 
 export default FuelQuoteHistory;
-
-/*
-<tbody>
-          {quotes.map((quote, index) => (
-            <tr key={index}>
-              <td>{quote.gallonsRequested}</td>
-              <td>
-                {quote.clientProfile.address1}, {quote.clientProfile.address2}
-                <br />
-                {quote.clientProfile.city}, {quote.clientProfile.state}{" "}
-                {quote.clientProfile.zipcode}
-              </td>
-              <td>{quote.deliveryDate}</td>
-              <td>{quote.suggestedPrice}</td>
-              <td>{quote.totalAmountDue}</td>
-            </tr>
-          ))}
-        </tbody>
-*/

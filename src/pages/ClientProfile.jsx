@@ -258,6 +258,9 @@ function ClientProfile() {
         <Link to={`/${clientid}/newquote`} className="btn btn-primary ms-2">
           New Quote
         </Link>
+        <Link to={`/login`} className="btn btn-primary ms-2">
+          Logout
+        </Link>
       </div>
     </form>
   );
