@@ -25,8 +25,10 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test": "mocha --exit",
+    "eject": "react-scripts eject",
+    "coverage": "nyc --reporter=lcov --reporter=text mocha --exit",
+    "coverage:html": "nyc --reporter=html mocha --exit"
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +50,8 @@
   },
   "devDependencies": {
     "chai": "^4.3.10",
-    "mocha": "^10.2.0"
+    "chai-http": "^4.4.0",
+    "mocha": "^10.2.0",
+    "nyc": "^15.1.0"
   }
 }
